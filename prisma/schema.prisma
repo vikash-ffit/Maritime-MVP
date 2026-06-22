@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CrewStatus {
+  ONBOARD
+  AVAILABLE
+  OFFBOARD
+  ON_LEAVE
+}
+
+enum Department {
+  DECK
+  ENGINE
+  CATERING
+  ELECTRICAL
+}
+
+model Crew {
+  id         String      @id @default(cuid())
+  firstName  String
+  lastName   String
+  rank       String
+  status     CrewStatus  @default(AVAILABLE)
+  department Department
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
