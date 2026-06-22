@@ -14,20 +14,46 @@ enum CrewStatus {
 }
 
 enum Department {
+  GENERAL // Added to support the "GENERAL" category seen in your UI
   DECK
   ENGINE
   CATERING
   ELECTRICAL
 }
 
-model Crew {
-  id         String      @id @default(cuid())
-  firstName  String
-  lastName   String
-  rank       String
-  status     CrewStatus  @default(AVAILABLE)
-  department Department
+// Added to track certificate validity for the dashboard alerts
+enum CertStatus {
+  VALID
+  EXPIRING_SOON
+  EXPIRED
+}
 
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+model Crew {
+  id           String        @id @default(cuid())
+  firstName    String
+  lastName     String
+  rank         String
+  status       CrewStatus    @default(AVAILABLE)
+  department   Department
+
+  // Relation: One Crew member can have multiple certificates
+  certificates Certificate[]
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+// New model to power the "Urgent Expiries" widget
+model Certificate {
+  id           String      @id @default(cuid())
+  name         String      // e.g., "STCW Basic Safety"
+  status       CertStatus  @default(VALID)
+  expiresAt    DateTime
+
+  crewId       String
+  // onDelete: Cascade ensures no orphaned certificates if a Crew member is removed
+  crew         Crew        @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
