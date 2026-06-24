@@ -1,4 +1,4 @@
-// app/crew/components/crew-pool/CrewCard.tsx
+import Link from "next/link";
 import { Ship, MapPin, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,8 +22,11 @@ export default function CrewCard({ member }: { member: PoolCrewMember }) {
   };
 
   return (
-    <div className="w-full">
-      <div className="shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-md transition-all group rounded-xl">
+    <Link
+      href={`/dashboard/${member.id}`}
+      className="block w-full outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl"
+    >
+      <div className="shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all group rounded-xl bg-white dark:bg-slate-950">
         <div className="p-5 flex flex-col gap-4">
           <div className="flex justify-between items-start gap-4">
             <div className="flex items-center gap-4">
@@ -53,9 +56,11 @@ export default function CrewCard({ member }: { member: PoolCrewMember }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-full"
+                // Prevent the button click from bubbling up if you eventually add secondary actions here
+                tabIndex={-1}
+                className="h-8 w-8 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20"
               >
-                <ArrowRight className="w-4 h-4 text-blue-600" />
+                <ArrowRight className="w-4 h-4 text-blue-600 transition-transform group-hover:translate-x-1" />
               </Button>
             </div>
           </div>
@@ -77,6 +82,6 @@ export default function CrewCard({ member }: { member: PoolCrewMember }) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

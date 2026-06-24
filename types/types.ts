@@ -5,75 +5,6 @@ export enum UserRole {
   MANAGER = 'PG Manager'
 }
 
-export enum RentStatus {
-  PAID = 'Paid',
-  DUE = 'Due',
-  OVERDUE = 'Overdue'
-}
-
-export enum UnitStatus {
-  AVAILABLE = 'Available',
-  OCCUPIED = 'Occupied',
-  NOTICE = 'On Notice'
-}
-
-export interface Tenant {
-  id: string;
-  name: string;
-  unitNumber: string;
-  phone: string;
-  rentAmount: number;
-  rentStatus: RentStatus;
-  noticePeriod: boolean;
-  noticeEndDate?: string;
-  joiningDate: string;
-}
-
-export enum PropertyType {
-  PG = 'pg',
-  FLAT = 'flat',
-  HOUSE = 'house',
-  COMMERCIAL = 'commercial'
-}
-
-export interface Unit {
-  id: string;
-  propertyId?: string;
-  unitNumber: string;
-  capacity: number;
-  occupancy: number;
-  status: UnitStatus;
-  floor: number;
-  type: string;
-  rent: number;
-  deposit: number;
-  description: string;
-  isOccupied: boolean;
-  tenantId?: string;
-}
-
-export interface RentRecord {
-  id: string;
-  tenantName: string;
-  tenantId: string;
-  unitNumber: string;
-  month: string;
-  amount: number;
-  dueDate: string;
-  status: RentStatus;
-}
-
-export interface Property {
-  id?: string;
-  name: string;
-  type: PropertyType;
-  description: string;
-  address: string;
-  ownerId?: string;
-  managerId?: string;
-  units?: Unit[];
-}
-
 // CREW
 export interface DashboardStats {
   total: number;
@@ -130,4 +61,28 @@ export interface CrewContract {
   shipOn: string;
   shipOff?: string;
   shoreOff?: string;
+}
+
+export interface WorkRestRecord {
+  id: string;
+  memberId: string;
+  firstName: string;
+  lastName: string;
+  rank: string;
+  code: string;
+  vessel: string;
+  days: number;
+  workHours: number;
+  violations: number;
+  signedOn: string;
+}
+
+export interface DailyWorkRest {
+  date: string;
+  dayNumber: number;
+  blocks: boolean[]; // 48 boolean values (true = work, false = rest)
+  seaPort: 'SEA' | 'PORT';
+  watchKeeper: boolean;
+  usLine: boolean;
+  remarks: string;
 }

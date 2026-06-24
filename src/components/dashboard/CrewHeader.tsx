@@ -1,15 +1,24 @@
+"use client";
+
 import { Users, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CrewPoolTab from "../crew-pool/CrewPoolTab";
-import DashboardTab from "./DashboardTab";
-import Link from "next/link";
-import CrewContractCard from "../contracts/ContractCard";
-import { MOCK_CREW } from "@/app/constants/constants";
-import ContractsTab from "../contracts/ContractsTab";
+import { useRouter, usePathname } from "next/navigation";
 
-export default function CrewHeader({tab}: {tab: string}) {
+import DashboardTab from "./DashboardTab";
+import CrewPoolTab from "../crew-pool/CrewPoolTab";
+import ContractsTab from "../contracts/ContractsTab";
+import WorkRestTab from "../work-rest/WorkRestTab";
+
+export default function CrewHeader({ tab }: { tab: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleTabChange = (value: string) => {
+    router.push(`${pathname}?tab=${value}`);
+  };
+
   return (
     <div className="w-full space-y-8">
       <Card className="bg-blue-600 text-white border-none shadow-md overflow-hidden rounded-2xl">
@@ -42,43 +51,41 @@ export default function CrewHeader({tab}: {tab: string}) {
 
       <div className="w-full flex justify-center">
         <div className="w-full">
-          <Tabs defaultValue={tab} className="w-full sm:w-auto gap-y-8">
+          {/* 🚀 FIX: Changed defaultValue to value, and added onValueChange */}
+          <Tabs
+            value={tab}
+            onValueChange={handleTabChange}
+            className="w-full sm:w-auto gap-y-8"
+          >
             <div className="flex justify-center w-full">
               <TabsList className="border text-blue-100 justify-center rounded-full px-2 py-6 h-auto flex-wrap sm:flex-nowrap">
+                {/* 🚀 FIX: Removed <Link> tags to prevent button-inside-link hydration errors */}
                 <TabsTrigger
                   value="dashboard"
                   className="rounded-full px-6 py-4 data-[state=active]:bg-white data-[state=active]:text-blue-700 transition-all"
                 >
-                  <Link href="?tab=dashboard" className="flex items-center gap-2">
                   Dashboard
-                  </Link>
                 </TabsTrigger>
 
                 <TabsTrigger
                   value="crew-pool"
                   className="rounded-full px-6 py-4 data-[state=active]:bg-white data-[state=active]:text-blue-700 transition-all"
                 >
-                  <Link href="?tab=crew-pool" className="flex items-center gap-2">
                   Crew Pool
-                  </Link>
                 </TabsTrigger>
 
                 <TabsTrigger
                   value="contracts"
                   className="rounded-full px-6 py-4 data-[state=active]:bg-white data-[state=active]:text-blue-700 transition-all"
                 >
-                  <Link href="?tab=contracts" className="flex items-center gap-2">
                   Contracts
-                  </Link>
                 </TabsTrigger>
 
                 <TabsTrigger
                   value="work-rest"
                   className="rounded-full px-6 py-4 data-[state=active]:bg-white data-[state=active]:text-blue-700 transition-all"
                 >
-                  <Link href="?tab=work-rest" className="flex items-center gap-2">
                   Work/Rest
-                  </Link>
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -89,8 +96,12 @@ export default function CrewHeader({tab}: {tab: string}) {
             <TabsContent value="crew-pool">
               <CrewPoolTab />
             </TabsContent>
-            <TabsContent value="contracts"> <ContractsTab /> </TabsContent>
-            <TabsContent value="work-rest"></TabsContent>
+            <TabsContent value="contracts">
+              <ContractsTab />
+            </TabsContent>
+            <TabsContent value="work-rest">
+              <WorkRestTab />
+            </TabsContent>
           </Tabs>
         </div>
       </div>

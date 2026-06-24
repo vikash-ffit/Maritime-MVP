@@ -76,9 +76,9 @@ const Navbar: React.FC<NavbarProps> = ({
           )}
         </button>
 
-        <div className='h-6 w-px bg-border mx-2 hidden sm:block'></div>
+        {/* <div className='h-6 w-px bg-border mx-2 hidden sm:block'></div> */}
 
-        <div className='flex items-center gap-3'>
+        {/* <div className='flex items-center gap-3'>
           <div className='text-right hidden sm:block'>
             <p className='text-sm font-medium leading-none text-foreground'>John Doe</p>
             <div className='mt-1 flex items-center'>
@@ -109,7 +109,7 @@ const Navbar: React.FC<NavbarProps> = ({
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </header>
   );
