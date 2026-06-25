@@ -38,9 +38,10 @@ export default function RootLayout({
           defaultTheme="light"
           disableTransitionOnChange
         >
-          <AppLayout>{children}</AppLayout>
+          {children}
           <Toaster position="top-right" richColors />
-        </ThemeProvider></body>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

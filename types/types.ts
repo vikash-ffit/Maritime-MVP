@@ -1,8 +1,7 @@
 
 export enum UserRole {
-  ADMIN = 'Admin',
-  OWNER = 'PG Owner',
-  MANAGER = 'PG Manager'
+  SHORE = 'SHORE',
+  SHIP = 'SHIP'
 }
 
 // CREW

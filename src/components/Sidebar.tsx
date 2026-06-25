@@ -4,23 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { UserRole } from "../../types/types";
-import { LogOut, ChevronLeft, ChevronRight, LayoutGrid } from "lucide-react";
+import { User, ChevronLeft, ChevronRight, LayoutGrid } from "lucide-react"; // Swapped LogOut for User
 import { NAV_ITEMS } from "@/app/constants/constants";
 
 interface SidebarProps {
   isOpen: boolean;
   toggle: () => void;
   currentRole: UserRole;
-  onLogout: () => void;
 }
 
-const Sidebar = ({ isOpen, toggle, currentRole, onLogout }: SidebarProps) => {
+const Sidebar = ({ isOpen, toggle, currentRole }: SidebarProps) => {
   const pathname = usePathname();
 
   return (
     <aside
       className={cn(
-        "relative h-full  bg-card flex flex-col",
+        "relative h-full bg-card flex flex-col",
         "duration-300 ease-in-out border-r border-border transition-all",
         isOpen ? "w-64" : "w-20",
       )}
@@ -90,18 +89,20 @@ const Sidebar = ({ isOpen, toggle, currentRole, onLogout }: SidebarProps) => {
 
       {/* Footer */}
       <div className="p-4 space-y-4">
-        <button
-          onClick={onLogout}
+        {/* 🚀 FIXED: Converted to a Profile Link instead of a direct Logout action */}
+        <Link
+          href="/profile"
           className={cn(
             "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-all duration-200",
-            "text-muted-foreground hover:bg-destructive/10 hover:text-destructive cursor-pointer",
+            "text-muted-foreground hover:bg-secondary/50 hover:text-foreground cursor-pointer",
+            pathname === "/profile" && "bg-secondary text-primary font-medium",
             !isOpen && "justify-center",
           )}
-          title={!isOpen ? "Logout" : undefined}
+          title={!isOpen ? "Profile" : undefined}
         >
-          <LogOut size={20} />
-          <span className={cn(!isOpen && "hidden")}>Logout</span>
-        </button>
+          <User size={20} />
+          <span className={cn(!isOpen && "hidden")}>Profile</span>
+        </Link>
 
         <button
           onClick={toggle}

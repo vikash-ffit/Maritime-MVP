@@ -1,17 +1,30 @@
 "use client";
 
-import { Users, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Users, Download, Plus } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useRouter, usePathname } from "next/navigation";
-
 import DashboardTab from "./DashboardTab";
 import CrewPoolTab from "../crew-pool/CrewPoolTab";
 import ContractsTab from "../contracts/ContractsTab";
 import WorkRestTab from "../work-rest/WorkRestTab";
+import AddCrewForm from "../form/AddCrewForm";
 
-export default function CrewHeader({ tab }: { tab: string }) {
+export default function CrewHeader({
+  tab,
+  userRole,
+}: {
+  tab: string;
+  userRole: string;
+}) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -39,19 +52,48 @@ export default function CrewHeader({ tab }: { tab: string }) {
                 </p>
               </div>
             </div>
-            <Button
-              variant="secondary"
-              className="bg-white/10 text-white hover:bg-white/20 border-none w-full sm:w-auto"
-            >
-              <Download className="w-4 h-4 mr-2" /> Export
-            </Button>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <Button
+                variant="secondary"
+                className="bg-white/10 text-white hover:bg-white/20 border-none flex-1 sm:flex-none"
+              >
+                <Download className="w-4 h-4 mr-2" /> Export
+              </Button>
+
+              {userRole === "SHORE" && (
+                <Dialog>
+                  {/* 🚀 FIX 2: Removed nested <Button> to fix hydration error */}
+                  <DialogTrigger
+                    className={buttonVariants({
+                      className:
+                        "bg-white text-blue-600 hover:bg-slate-100 font-bold w-full sm:w-auto shadow-sm border-none cursor-pointer",
+                    })}
+                  >
+                    <Plus className="w-4 h-4 text-blue-600" />
+                    <span className="text-blue-600">Add Crew</span>
+                  </DialogTrigger>
+
+                  {/* Modal Container */}
+                  <DialogContent className="sm:max-w-[750px] max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-bold text-slate-800 border-b pb-4">
+                        Add Crew Member
+                      </DialogTitle>
+                    </DialogHeader>
+
+                    {/* The form is rendered here cleanly */}
+                    <AddCrewForm />
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
           </div>
         </CardHeader>
       </Card>
 
       <div className="w-full flex justify-center">
         <div className="w-full">
-          {/* 🚀 FIX: Changed defaultValue to value, and added onValueChange */}
           <Tabs
             value={tab}
             onValueChange={handleTabChange}
@@ -59,7 +101,6 @@ export default function CrewHeader({ tab }: { tab: string }) {
           >
             <div className="flex justify-center w-full">
               <TabsList className="border text-blue-100 justify-center rounded-full px-2 py-6 h-auto flex-wrap sm:flex-nowrap">
-                {/* 🚀 FIX: Removed <Link> tags to prevent button-inside-link hydration errors */}
                 <TabsTrigger
                   value="dashboard"
                   className="rounded-full px-6 py-4 data-[state=active]:bg-white data-[state=active]:text-blue-700 transition-all"

@@ -1,11 +1,9 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
-import React, { useEffect, useState } from 'react';
-import { Sun, Moon, Bell, ChevronDown, UserCircle, Menu } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { UserRole } from '../../types/types';
-import { usePathname } from 'next/navigation';
-import { usePageTitle } from './PageTitleContext';
+import React, { useEffect, useState } from "react";
+import { Sun, Moon, Menu, Ship, ChevronDown, Building2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import { UserRole } from "../../types/types";
 
 interface NavbarProps {
   currentRole: UserRole;
@@ -14,102 +12,105 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-  currentRole,
-  onRoleChange,
+  currentRole = UserRole.SHIP,
   toggleSidebar,
 }) => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
-  const { dynamicLabels } = usePageTitle();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const getPageTitle = (path: string) => {
-    if (!path || path === '/dashboard') return 'Dashboard';
-    const parts = path.split('/').filter(Boolean);
-    if (parts.length === 0) return 'Dashboard';
-    
-    // Capitalize each part or use dynamic label, then join
-    return parts.map(part => {
-      if (dynamicLabels[part]) return dynamicLabels[part];
-      if (part.length > 20) return 'Details';
-      return part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' ');
-    }).join(' > ');
-  };
-
-  const pageTitle = getPageTitle(pathname || '');
-
   return (
-    <header className='h-16 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-4 sm:px-8 sticky top-0 z-10'>
-      <div className='flex items-center gap-4'>
+    <header className="h-16 border-b border-border bg-card/80 backdrop-blur-md flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20">
+      {/* Left: Mobile Toggle & Page Title */}
+      <div className="flex items-center gap-4">
         <button
           onClick={toggleSidebar}
-          className='md:hidden p-2 rounded-full hover:bg-secondary transition-colors text-foreground'
-          title='Toggle Sidebar'
+          className="md:hidden p-2 rounded-lg hover:bg-secondary transition-colors text-foreground"
+          title="Toggle Sidebar"
         >
-          <Menu size={24} />
+          <Menu size={20} />
         </button>
-        <h1 className='text-lg font-bold hidden md:block text-foreground tracking-tight'>
-          {pageTitle}
-        </h1>
-        <div className='md:hidden flex items-center gap-2'>
-          <div className='w-8 h-8 bg-primary rounded flex items-center justify-center text-primary-foreground'>
-            <span className='font-bold'>M</span>
+
+        {/* Mobile Brand Logo */}
+        <div className="md:hidden flex items-center gap-2">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+            <span className="font-bold">M</span>
           </div>
-          <span className='font-bold text-foreground'>Maritime</span>
+          <span className="font-bold text-foreground tracking-tight">
+            Maritime
+          </span>
         </div>
       </div>
 
-      <div className='flex items-center gap-2 sm:gap-4'>
-        <button
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className='p-2 rounded-full hover:bg-secondary transition-colors cursor-pointer text-foreground border border-border'
-          title='Toggle Theme'
-        >
-          {mounted ? (
-            theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />
-          ) : (
-            <div className="w-5 h-5" />
-          )}
-        </button>
+      <div className="flex items-center gap-3 sm:gap-5">
+        <div className="hidden sm:flex items-center gap-4 border-r border-border pr-5">
+          <div
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${
+              currentRole === UserRole.SHORE
+                ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400"
+                : "bg-cyan-50 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-400"
+            }`}
+          >
+            {currentRole === UserRole.SHORE ? (
+              <Building2 size={12} strokeWidth={3} />
+            ) : (
+              <Ship size={12} strokeWidth={3} />
+            )}
 
-        {/* <div className='h-6 w-px bg-border mx-2 hidden sm:block'></div> */}
+            {/* 🚀 FIXED: Appended " MODE" to the role text */}
+            <span className="text-[10px] font-extrabold uppercase tracking-widest">
+              {currentRole} MODE
+            </span>
+          </div>
 
-        {/* <div className='flex items-center gap-3'>
-          <div className='text-right hidden sm:block'>
-            <p className='text-sm font-medium leading-none text-foreground'>John Doe</p>
-            <div className='mt-1 flex items-center'>
-              <span className='text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-primary text-primary-foreground'>
-                {currentRole}
+          {/* Mode / Connection Status */}
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20">
+            <div className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </div>
+            <span className="text-[10px] font-extrabold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">
+              Live Sync
+            </span>
+          </div>
+
+          {/* Active Vessel Selector */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 cursor-pointer transition-all group">
+            <Ship
+              size={16}
+              className="text-blue-600 dark:text-blue-500 group-hover:scale-110 transition-transform"
+            />
+            <div className="flex flex-col">
+              <span className="text-[9px] font-bold text-slate-400 uppercase leading-none mb-0.5">
+                Active Vessel
+              </span>
+              <span className="text-xs font-bold text-slate-900 dark:text-white leading-none">
+                Black Pearl
               </span>
             </div>
+            <ChevronDown size={14} className="text-slate-400 ml-1" />
           </div>
-          <div className='relative group'>
-            <button className='flex items-center gap-2 p-1 rounded-full hover:bg-secondary transition-colors text-foreground'>
-              <UserCircle size={32} strokeWidth={1.5} />
-              <ChevronDown size={14} className='text-muted-foreground hidden sm:block' />
-            </button>
-            <div className='absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-xl hidden group-hover:block animate-in fade-in slide-in-from-top-2 duration-200'>
-              <div className='p-2 space-y-1'>
-                <p className='px-3 py-2 text-xs font-semibold text-muted-foreground uppercase'>
-                  Switch Role
-                </p>
-                {Object.values(UserRole).map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => onRoleChange(role)}
-                    className={`w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-secondary transition-colors text-foreground ${currentRole === role ? 'bg-secondary/50 font-medium' : 'opacity-70'}`}
-                  >
-                    {role}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div> */}
+        </div>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="p-2.5 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400"
+          title="Toggle Theme"
+        >
+          {mounted ? (
+            theme === "dark" ? (
+              <Sun size={18} />
+            ) : (
+              <Moon size={18} />
+            )
+          ) : (
+            <div className="w-[18px] h-[18px]" />
+          )}
+        </button>
       </div>
     </header>
   );
